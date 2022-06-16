@@ -1,0 +1,52 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<button @onclick="GetWeatherForecastAsync">Test</button>
+
+@if (weather == null)
+{
+	<p>Loading...</p>
+}
+else
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Location</th>
+				<th>Time</th>
+				<th>Temp</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@weather.weatherForecast.location.name</td>
+				<td>@weather.weatherForecast.current.dt</td>
+				<td>@weather.weatherForecast.current.temp</td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+	string location = "buffalo";
+	Weather? weather;
+
+	/*void GetWeatherForecast()
+		{
+		Console.WriteLine(weather == null);
+		if (weather != null)
+			weather.MakeForecastFromLocation(location);
+	}*/
+	async Task GetWeatherForecastAsync(){
+		Weather tempWeather = new Weather();
+		await tempWeather.MakeForecastFromLocationAsync(location);
+		weather = tempWeather;
+	}
+}
