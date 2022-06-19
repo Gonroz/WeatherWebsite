@@ -2,10 +2,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
+<input type="text" @bind="location" placeholder="Location"/>
 <button @onclick="GetWeatherForecastAsync">Test</button>
 
 @if (weather == null)
@@ -20,6 +17,7 @@ else
 				<th>Location</th>
 				<th>Time</th>
 				<th>Temp</th>
+				<th>Feels Like</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,15 +25,23 @@ else
 				<td>@weather.weatherForecast.location.name</td>
 				<td>@weather.weatherForecast.current.dt</td>
 				<td>@weather.weatherForecast.current.temp</td>
+				<td>@weather.weatherForecast.current.feels_like</td>
 			</tr>
 		</tbody>
 	</table>
+
+	<div>
+		@weather.weatherForecast.location.name
+		@weather.weatherForecast.current.dt
+		@weather.weatherForecast.current.temp
+		@weather.weatherForecast.current.feels_like
+	</div>
 }
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @code{
-	string location = "buffalo";
+	string location;
 	Weather? weather;
 
 	/*void GetWeatherForecast()
