@@ -1,58 +1,76 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>WeatherWebsite</PageTitle>
 
-<input type="text" @bind="location" placeholder="Location"/>
-<button @onclick="GetWeatherForecastAsync">Test</button>
-
-@if (weather == null)
-{
-	<p>Loading...</p>
-}
-else
-{
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Location</th>
-				<th>Time</th>
-				<th>Temp</th>
-				<th>Feels Like</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>@weather.weatherForecast.location.name</td>
-				<td>@weather.weatherForecast.current.dt</td>
-				<td>@weather.weatherForecast.current.temp</td>
-				<td>@weather.weatherForecast.current.feels_like</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<div>
-		@weather.weatherForecast.location.name
-		@weather.weatherForecast.current.dt
-		@weather.weatherForecast.current.temp
-		@weather.weatherForecast.current.feels_like
+<div class="WeatherCurrentCard">
+	<div class="search">
+		<input type="text" class="search-bar" placeholder="Search" @bind="locationSearch"/>
+		<button @onclick="FormWeather"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1.5em"
+          width="1.5em" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0 0 11.6 0l43.6-43.5a8.2 8.2 0 0 0 0-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z">
+          </path>
+        </svg></button>
 	</div>
-}
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+	@if(weather == null)
+	{
+		<div class="weather">
+			<h3 class="city">Buffalo, NY</h3>
+			<h2 class="temp">67°F</h2>
+			<h4 class="feelsLike">Feels Like: 64</h4>
+			<img src="" alt="" class="icon"/>
+			<div class="description">Cloudy</div>
+			<div class="humidity">67%</div>
+			<div class="wind">Wind Speed: 5.4 MPH</div>
+		</div>
+	}
+	else
+	{
+		<div class="weather">
+			<h3 class="city">@location</h3>
+			<h2 class="temp">@temperature</h2>
+			<h4 class="feelsLike">Feels Like: @feelsLike</h4>
+			<img src="" alt="" class="icon"/>
+			<div class="description">Cloudy</div>
+			<div class="humidity">Humidity: @humidity</div>
+			<div class="wind">Wind Speed: 5.4 MPH</div>
+		</div>
+	}
+</div>
 
 @code{
-	string location;
+	string locationSearch;
 	Weather? weather;
 
-	/*void GetWeatherForecast()
+	string temperature;
+	string feelsLike;
+	string humidity;
+	string location;
+
+	async Task FormWeather()
+	{
+		GetWeatherForecastAsync();
+		ConvertWeatherToVariables();
+	}
+
+	async Task ConvertWeatherToVariables ()
+	{
+		temperature = Math.Round(1.8 * (weather.weatherForecast.current.temp - 273) + 32).ToString() + "°F";
+		feelsLike = Math.Round(1.8 * (weather.weatherForecast.current.feels_like - 273) + 32).ToString() + "°F";
+		humidity = weather.weatherForecast.current.humidity.ToString() + "%";
+		if (weather.weatherForecast.location.country.ToUpper() == "US")
 		{
-		Console.WriteLine(weather == null);
-		if (weather != null)
-			weather.MakeForecastFromLocation(location);
-	}*/
+			location = $"{weather.weatherForecast.location.name}, {weather.weatherForecast.location.state}";
+		}
+		else
+		{
+			location = $"{weather.weatherForecast.location.name}, {weather.weatherForecast.location.country}";
+		}
+	}
+
 	async Task GetWeatherForecastAsync(){
 		Weather tempWeather = new Weather();
-		await tempWeather.MakeForecastFromLocationAsync(location);
+		await tempWeather.MakeForecastFromLocationAsync(locationSearch);
 		weather = tempWeather;
 	}
 }

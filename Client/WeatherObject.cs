@@ -95,6 +95,7 @@ public class Weather
         string weatherJson = await GetJsonFromUrlAsync($"https://api.openweathermap.org/data/2.5/onecall?lat={location.lat}&lon={location.lon}&appid={apiKey}");
         WeatherForecast? weatherForecast = JsonSerializer.Deserialize<WeatherForecast>(weatherJson);
         weatherForecast.location = location;
+        //Console.WriteLine($"https://api.openweathermap.org/data/2.5/onecall?lat={location.lat}&lon={location.lon}&appid={apiKey}");
         return weatherForecast;
     }
 }
@@ -125,4 +126,6 @@ public class WeatherCurrent
     public int sunset { get; set; }
     public float temp { get; set; }
     public float feels_like { get; set; }
+    public int humidity { get; set; }
+    public float wind_speed { get; set; }
 }
